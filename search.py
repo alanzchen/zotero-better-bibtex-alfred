@@ -30,14 +30,17 @@ def main(wf):
     keyword = args[0]
     r = search(keyword)
     for i in r:
-        authors = [j['family'] for j in i['author']]
-        authors_ = ', '.join(authors)
+        try:
+            authors = [j['family'] for j in i['author']]
+            authors_ = ', '.join(authors)
+        except KeyError:
+            authors_ = 'Missing Authors'
         year = ''
         try:
             year = str(i['issued']['date-parts'][0][0]) + ' '
         except KeyError:
             pass
-        wf.add_item(year + i['title'], authors_, arg='@' + i['citekey'], valid=True)
+        wf.add_item(i['title'], year + authors_, arg='@' + i['citekey'], valid=True)
 
     # Send output to Alfred. You can only call this once.
     # Well, you *can* call it multiple times, but subsequent calls
